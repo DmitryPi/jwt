@@ -1,4 +1,6 @@
+import jwt_decode from 'jwt-decode';
 import { createContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const AuthContext = createContext();
@@ -8,8 +10,10 @@ export default AuthContext;
 
 
 export const AuthProvider = ({ children }) => {
+    // localStorage.getItem('authTokens')
     let [authTokens, setAuthTokens] = useState(null);
     let [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
     let loginUser = async (e) => {
         e.preventDefault();
@@ -24,9 +28,18 @@ export const AuthProvider = ({ children }) => {
         let data = await response.json();
         console.log('data:', data);
         console.log('response:', response);
+        if (response.status === 200) {
+            setAuthTokens(data);
+            setUser(jwt_decode(data.access));
+            localStorage.setItem('authTokens', JSON.stringify(data));
+            navigate('/');
+        } else {
+            alert('Something went wrong in loginUser');
+        }
     };
 
     let contextData = {
+        user: user,
         loginUser: loginUser
     };
 
