@@ -1,9 +1,13 @@
-from django.http import JsonResponse
+from django.urls import resolve, reverse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
-def getRoutes(request):
+@api_view(["GET"])
+def get_routes(request):
     routes = [
-        "/api/token",
-        "/api/token/refresh",
+        request.build_absolute_uri(reverse("token_obtain_pair")),
+        request.build_absolute_uri(reverse("token_refresh")),
+        request.build_absolute_uri(reverse("token_verify")),
     ]
-    return JsonResponse(routes, safe=False)
+    return Response(routes)
