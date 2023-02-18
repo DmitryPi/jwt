@@ -73,16 +73,18 @@ export const AuthProvider = ({ children }) => {
 
     let contextData = {
         user: user,
+        authTokens: authTokens,
         loginUser: loginUser,
         logoutUser: logoutUser,
     };
 
     useEffect(() => {
+        let fourMinutes = 1000 * 60 * 4;
         let interval = setInterval(() => {
             if (authTokens) {
                 updateToken();
             }
-        }, 2000);
+        }, fourMinutes);
         return () => clearInterval(interval);
 
     }, [authTokens, loading]);
